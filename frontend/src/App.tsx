@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {makeStyles, Theme} from "@material-ui/core/styles";
+import {useDispatch} from "react-redux";
+import {Header} from "./components/Header";
+import {closeDialogAC} from "./redux/reducer/DialogReducer";
+import {RegisterDialog} from "./components/RegisterDialog";
+import {LoginDialog} from "./components/LoginDialog";
+
+const useStyles = makeStyles((theme: Theme) => ({
+    app: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+}));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const classes = useStyles()
+    const dispatch = useDispatch()
+
+    const handleClose = () => {
+        dispatch(closeDialogAC())
+    };
+
+    return (
+        <div className={classes.app}>
+            <Header/>
+            <RegisterDialog handleClose={handleClose}/>
+            <LoginDialog handleClose={handleClose}/>
+        </div>
+    );
 }
 
 export default App;

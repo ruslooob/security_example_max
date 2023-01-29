@@ -2,6 +2,7 @@ import {AuthActionType, authReducer} from "./reducer/AuthReducer";
 import {DialogActionType, dialogReducer} from "./reducer/DialogReducer";
 import {configureStore} from "@reduxjs/toolkit";
 
+/*todo перевести все на redux-toolkit*/
 export interface State {
     fio: string,
     login: string,
@@ -11,6 +12,7 @@ export interface State {
     openedDialogName: DialogActionType,
 }
 
+/*todo убрать лишние переменные*/
 const initialState: State = {
     fio: '',
     login: '',

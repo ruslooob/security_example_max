@@ -29,7 +29,7 @@ export const PasswordField: React.FC<Props> = ({id, label, onChange}) => {
                             aria-label="toggle password visibility"
                             onClick={handleClickShowPassword}
                         >
-                            {showPassword ? <Visibility fontSize="medium"/> : <VisibilityOff fontSize="medium"/>}
+                            {showPassword ? <Visibility fontSize="small"/> : <VisibilityOff fontSize="small"/>}
                         </IconButton>
                     </InputAdornment>
                 ),

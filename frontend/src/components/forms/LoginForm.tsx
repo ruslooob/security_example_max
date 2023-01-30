@@ -4,8 +4,8 @@ import Button from '@material-ui/core/Button';
 import {PasswordField} from "./PasswordField";
 import {Box, Paper, Typography} from "@material-ui/core";
 import {useDispatch} from "react-redux";
-import {loginAC} from "../../redux/reducer/AuthReducer";
 import {useStyles} from "./FormStyles";
+import {doLogin} from "../../store/slice/AuthSlice";
 
 /*todo подумать над созданием отдельных компонентов для полей ввода*/
 /*todo add validation after extraction fields into separate components*/
@@ -18,7 +18,7 @@ export const LoginForm = () => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        dispatch(loginAC({login, password}))
+        dispatch(doLogin({login, password}))
     };
 
     return (

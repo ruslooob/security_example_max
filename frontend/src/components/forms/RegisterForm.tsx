@@ -4,8 +4,8 @@ import Button from "@material-ui/core/Button";
 import {PasswordField} from "./PasswordField";
 import {Box, Paper, Typography} from "@material-ui/core";
 import {useDispatch} from "react-redux";
-import {registerAC} from "../../redux/reducer/AuthReducer";
 import {useStyles} from "./FormStyles";
+import {doRegister} from "../../store/slice/AuthSlice";
 
 
 export const RegisterForm = () => {
@@ -20,7 +20,7 @@ export const RegisterForm = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        dispatch(registerAC({fio, login, password, repeatPassword}))
+        dispatch(doRegister({fio, login, password, repeatPassword}))
     }
 
     return (
@@ -28,8 +28,22 @@ export const RegisterForm = () => {
             <Typography variant="h5">Регистрация</Typography>
             <Box className={classes.form} component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
                 <TextField
-                    id="fio"
-                    label="ФИО"
+                    id="lastName"
+                    label="Фамилия"
+                    value={fio}
+                    fullWidth
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFio(event.target.value)}
+                />
+                <TextField
+                    id="firstName"
+                    label="Имя"
+                    value={fio}
+                    fullWidth
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFio(event.target.value)}
+                />
+                <TextField
+                    id="middleName"
+                    label="Отчество"
                     value={fio}
                     fullWidth
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFio(event.target.value)}

@@ -28,6 +28,7 @@ export const Header = () => {
                 <Link to="/" style={{color: 'inherit', textDecoration: 'inherit'}}>
                     <Typography variant="h6">Медсофт</Typography>
                 </Link>
+                {/*todo скрыть кнопки, если пользователь зашел*/}
                 <Box>
                     <Link to={"/login"} style={{color: 'inherit', textDecoration: 'inherit'}}>
                         <Button

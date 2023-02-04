@@ -1,4 +1,4 @@
-export function MainPage() {
+export function Main() {
     return (
         <>This is main page</>
     )

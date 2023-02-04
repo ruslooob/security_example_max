@@ -1,16 +1,19 @@
-import React, {FormEvent, useState} from 'react';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {PasswordField} from "./PasswordField";
 import {Box, Paper, Typography} from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import {useStyles} from "./FormStyles";
-import {setCredentials, User} from "../../store/slice/AuthSlice";
-import {useLoginMutation} from "../../api/apiSlice";
+import {Credentials, LoginPayload, setCredentials} from "../../store/slice/AuthSlice";
+import {useLoginMutation} from "../../api/authApi";
 import {useNavigate} from "react-router-dom";
+import {z} from "zod";
+import {loginSchema} from "./authSchema";
+import {Controller, SubmitHandler, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod/dist/zod";
+import {PasswordField} from "./PasswordField";
 
 /*todo подумать над созданием отдельных компонентов для полей ввода*/
-/*todo add validation after extraction fields into separate components*/
 export const LoginForm = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -18,16 +21,13 @@ export const LoginForm = () => {
 
     const [doLogin, {isLoading, isError}] = useLoginMutation();
 
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const onSubmit: SubmitHandler<LoginInputType> = async (data) => {
         try {
-            const response = await doLogin({login, password} as User).unwrap()
-            const user: User = {login, password}
-            const token = response.token
-            dispatch(setCredentials({user, token}))
+            console.log(data)
+            const response = await doLogin({...data} as LoginPayload).unwrap()
+            const token = response.token;
+            dispatch(setCredentials({...data, token} as Credentials))
             if (token) {
                 navigate("/main")
             } else {
@@ -38,21 +38,54 @@ export const LoginForm = () => {
         }
     };
 
+
+    type LoginInputType = z.infer<typeof loginSchema>;
+    const {
+        control,
+        watch,
+        handleSubmit,
+        formState: {errors}
+    } = useForm<LoginInputType>({
+        mode: "onChange",
+        resolver: zodResolver(loginSchema),
+    })
+
     return (
         <Paper className={classes.root}>
             <Typography variant="h5">Вход</Typography>
             <Box className={classes.form}
                  component="form"
-                 onSubmit={handleSubmit} sx={{mt: 1}}
+                 onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}
             >
-                <TextField
-                    id="login"
-                    label="Логин"
-                    value={login}
-                    fullWidth
-                    onChange={e => setLogin(e.target.value)}
+                <Controller
+                    name="login"
+                    control={control}
+                    defaultValue=''
+                    render={({field: {ref, ...field}}) => (
+                        <TextField
+                            label="Логин"
+                            fullWidth
+                            error={Boolean(errors.login)}
+                            helperText={errors.login?.message}
+                            inputRef={ref}
+                            {...field}
+                        />
+                    )}
                 />
-                <PasswordField id="password" label="Пароль" onChange={setPassword}/>
+                <Controller
+                    name="password"
+                    control={control}
+                    defaultValue=''
+                    render={({field: {ref, ...field}}) => (
+                        <PasswordField
+                            label="Пароль"
+                            error={Boolean(errors.password)}
+                            helperText={errors.password?.message}
+                            inputRef={ref}
+                            field={field}
+                        />
+                    )}
+                />
                 <Button
                     className={classes.submitBtn}
                     variant="contained"

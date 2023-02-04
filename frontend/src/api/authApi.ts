@@ -29,10 +29,12 @@ const baseQueryWithReAuth = async (args: string, api: BaseQueryApi, extraOptions
         const refreshResult = await baseQuery('/refresh', api, extraOptions)
         console.log(refreshResult)
         if (refreshResult?.error?.data) {
-            const user = (api.getState() as RootState).auth.user
+            const {login, password} = (api.getState() as RootState).auth
+            // @ts-ignore
+            const token = refreshResult.token;
             // store new token
             // @ts-ignore
-            api.dispatch(setCredentials({...refreshResult.data}, user))
+            api.dispatch(setCredentials({login, password, token}))
             // retry the original query with new access token
             result = await baseQuery(args, api, extraOptions)
         } else {
@@ -50,12 +52,12 @@ export interface RegisterResponse {
     token: string
 }
 
-export const apiSlice = createApi({
+export const authApi = createApi({
         baseQuery,
         endpoints: builder => ({
             login: builder.mutation<LoginResponse, LoginPayload>({
                 query: (payload: LoginPayload) => ({
-                    url: 'authenticate',
+                    url: 'login',
                     body: payload,
                     method: 'POST'
                 })
@@ -71,4 +73,4 @@ export const apiSlice = createApi({
     }
 )
 
-export const {useLoginMutation, useRegisterMutation} = apiSlice;
+export const {useLoginMutation, useRegisterMutation} = authApi;

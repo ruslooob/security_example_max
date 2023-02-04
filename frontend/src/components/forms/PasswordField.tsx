@@ -1,15 +1,18 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
+import React, {FC, useState} from "react";
 import {IconButton, InputAdornment, TextField} from "@material-ui/core";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {Noop} from "react-hook-form";
 
 
 interface Props {
-    id: string,
     label: string,
-    onChange: Dispatch<SetStateAction<string>>
+    error: boolean,
+    helperText: string | undefined,
+    inputRef: any,
+    field: { onChange: (...event: any[]) => void, onBlur: Noop, value: string, name: string }
 }
 
-export const PasswordField: React.FC<Props> = ({id, label, onChange}) => {
+export const PasswordField: FC<Props> = ({label, error, helperText, inputRef, field}) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => {
@@ -18,10 +21,12 @@ export const PasswordField: React.FC<Props> = ({id, label, onChange}) => {
 
     return (
         <TextField
-            id={id}
             label={label}
             type={showPassword ? 'text' : 'password'}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+            error={error}
+            helperText={helperText}
+            {...field}
+            inputRef={inputRef}
             InputProps={{
                 endAdornment: (
                     <InputAdornment position="end">

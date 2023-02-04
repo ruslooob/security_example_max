@@ -3,7 +3,7 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import {Route, Routes} from "react-router-dom";
 import {NotFound} from "./components/NotFound";
 import {Main} from "./components/Main";
-import {Header} from "./components/Header";
+import {Header} from "./components/header";
 import {Container, CssBaseline} from '@material-ui/core';
 import {RegisterForm} from "./components/forms/RegisterForm";
 import {LoginForm} from "./components/forms/LoginForm";

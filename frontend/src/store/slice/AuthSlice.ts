@@ -1,10 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-export interface User {
-    login: string,
-    password: string,
-}
-
 export interface PersonInfo {
     firstName: string,
     lastName: string,
@@ -12,9 +7,10 @@ export interface PersonInfo {
 }
 
 export interface AuthState {
-    user: User | null,
-    personInfo: PersonInfo | null
-    token: string | null,
+    login: string,
+    password: string,
+    personInfo?: PersonInfo,
+    token: string,
 }
 
 export interface LoginPayload {
@@ -22,38 +18,44 @@ export interface LoginPayload {
     password: string
 }
 
-/*todo убрать хранение пароля на клиенте*/
+
 export interface RegisterPayload {
     firstName: string,
     lastName: string,
-    middleName: string,
+    middleName: string | null,
     login: string,
     password: string,
 }
 
 export interface Credentials {
-    user: User,
+    login: string,
+    password: string
     token: string,
 }
 
 const initialState: AuthState = {
-    user: null,
-    personInfo: null,
-    token: null
+    login: '',
+    password: '',
+    personInfo: {} as PersonInfo,
+    token: ''
 }
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        // todo найти способ, как более лаконично сделать присвоение по короткому пока не получается
         setCredentials(state: AuthState, action: PayloadAction<Credentials>) {
-            const {user, token} = action.payload
-            state.user = user;
-            state.token = token;
+            const payload = action.payload
+            state.login = payload.login
+            state.password = payload.password
+            state.token = payload.token
         },
         logOut(state: AuthState) {
-            state.user = null;
-            state.token = null;
+            state.login = ''
+            state.password = ''
+            state.personInfo = {} as PersonInfo
+            state.token = ''
         }
     }
 })

@@ -12,6 +12,7 @@ import {loginSchema} from "./authSchema";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod/dist/zod";
 import {PasswordField} from "./PasswordField";
+import {Alert} from "@mui/material";
 
 /*todo подумать над созданием отдельных компонентов для полей ввода*/
 export const LoginForm = () => {
@@ -27,7 +28,8 @@ export const LoginForm = () => {
             console.log(data)
             const response = await doLogin({...data} as LoginPayload).unwrap()
             const token = response.token;
-            dispatch(setCredentials({...data, token} as Credentials))
+            const role = response.role;
+            dispatch(setCredentials({...data, token, role} as Credentials))
             if (token) {
                 navigate("/main")
             } else {

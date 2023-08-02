@@ -1,39 +1,59 @@
-import React from 'react'
+import React, {useState} from 'react'
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {PasswordField} from "./PasswordField";
-import {Box, Paper, Typography} from "@material-ui/core";
+import {Box, IconButton, Paper, Snackbar, Typography} from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import {useStyles} from "./FormStyles";
 import {useRegisterMutation} from "../../api/authApi";
 import {useNavigate} from "react-router-dom";
-import {Credentials, setCredentials} from "../../store/slice/AuthSlice";
 import {z} from 'zod'
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {registerSchema} from "./authSchema";
+import CloseIcon from '@mui/icons-material/Close';
+import {delay} from "../../utils/delay";
 
 
 export const RegisterForm = () => {
     const classes = useStyles()
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [isSnackBarShowing, setSnackBarShowing] = useState(false);
 
     const [doRegister, {isLoading, isError}] = useRegisterMutation();
 
+    const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackBarShowing(false);
+    };
+
+    const snackBarAction = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleSnackBarClose}
+            >
+                <CloseIcon fontSize="small"/>
+            </IconButton>
+        </React.Fragment>
+    );
+
+    const snackBarShowingTimeMillis = 2_000
     const onSubmit: SubmitHandler<RegisterInputType> = async (data) => {
-        console.log(data)
+        setSnackBarShowing(true)
+        await delay(snackBarShowingTimeMillis)
 
         const userData = await doRegister(data).unwrap()
         const token = userData.token;
-        const credentials: Credentials = {
-            login: data.login,
-            password: data.password,
-            token,
-        }
-        dispatch(setCredentials(credentials))
         if (token) {
             navigate("/login")
+
         } else {
             console.log("incorrect login or password")
         }
@@ -52,6 +72,13 @@ export const RegisterForm = () => {
 
     return (
         <Paper className={classes.root}>
+            <Snackbar
+                open={isSnackBarShowing}
+                autoHideDuration={snackBarShowingTimeMillis}
+                onClose={handleSnackBarClose}
+                message="Пользователь успешно зарегистрирован"
+                action={snackBarAction}
+            />
             <Typography variant="h5">Регистрация</Typography>
             <Box className={classes.form} component="form" onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}>
                 <Controller

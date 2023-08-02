@@ -6,11 +6,17 @@ export interface PersonInfo {
     middleName: string,
 }
 
+export enum Role {
+    USER,
+    ADMIN,
+}
+
 export interface AuthState {
     login: string,
     password: string,
     personInfo?: PersonInfo,
     token: string,
+    role: Role
 }
 
 export interface LoginPayload {
@@ -31,13 +37,15 @@ export interface Credentials {
     login: string,
     password: string
     token: string,
+    role: Role,
 }
 
 const initialState: AuthState = {
     login: '',
     password: '',
     personInfo: {} as PersonInfo,
-    token: ''
+    token: '',
+    role: {} as Role
 }
 
 const authSlice = createSlice({
@@ -50,12 +58,14 @@ const authSlice = createSlice({
             state.login = payload.login
             state.password = payload.password
             state.token = payload.token
+            state.role = payload.role
         },
         logOut(state: AuthState) {
             state.login = ''
             state.password = ''
             state.personInfo = {} as PersonInfo
             state.token = ''
+            state.role = {} as Role
         }
     }
 })

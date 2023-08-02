@@ -1,6 +1,6 @@
 import {BaseQueryApi, createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {QueryReturnValue} from "@reduxjs/toolkit/dist/query/baseQueryTypes";
-import {LoginPayload, logOut, RegisterPayload, setCredentials} from "../store/slice/AuthSlice";
+import {LoginPayload, logOut, RegisterPayload, Role, setCredentials} from "../store/slice/AuthSlice";
 import {RootState} from "../store";
 
 
@@ -45,7 +45,8 @@ const baseQueryWithReAuth = async (args: string, api: BaseQueryApi, extraOptions
 }
 
 export interface LoginResponse {
-    token: string
+    token: string,
+    role: Role,
 }
 
 export interface RegisterResponse {
